@@ -16,8 +16,9 @@ defmodule Cryptex.MessageEncryptorTest do
   end
 
   test "it encrypts/decrypts a message", %{encryptor: encryptor} do
-    message = %{foo: "bar"}
-    encrypted = ME.encrypt_and_sign(encryptor, message)
-    assert message == ME.decrypt_and_verify(encryptor, encrypted)
+    data = %{current_user: %{name: "José"}}
+    encrypted = ME.encrypt_and_sign(encryptor, data)
+    decrypted = ME.decrypt_and_verify(encryptor, encrypted)
+    assert "José" == decrypted.current_user.name
   end
 end
