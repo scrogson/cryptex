@@ -11,11 +11,18 @@ defmodule Cryptex.MessageEncryptor do
 
   ## Example
 
-    salt = :crypto.strong_rand_bytes(64)
-    key = KeyGenerator.generate("password", salt) # => "\x89\xE0\x156\xAC..."
-    msg = "my secret message"
-    encrypted_data = MessageEncryptor.encrypt_and_sign(msg, key) # => "NlFBTTMwOUV5UlA1QlNEN2xkY2d6eThYWWh..."
-    MessageEncryptor.decrypt_and_verify(encrypted_data, key) # => "my secret message"
+    secret_key_base = "072d1e0157c008193fe48a670cce031faa4e..."
+    encrypted_cookie_salt = "encrypted cookie"
+    encrypted_signed_cookie_salt = "signed encrypted cookie"
+
+    secret = KeyGenerator.generate(secret_key_base, encrypted_cookie_salt)
+    sign_secret = KeyGenerator.generate(secret_key_base, encrypted_signed_cookie_salt)
+    encryptor = MessageEncryptor.new(secret, sign_secret)
+
+    data = %{current_user: %{name: "José"}}
+    encrypted = MessageEncryptor.encrypt_and_sign(encryptor, data)
+    decrypted = MessageEncryptor.decrypt_and_verify(encryptor, encrypted)
+    decrypted.current_user.name # => "José"
   """
 
   use GenServer
