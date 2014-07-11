@@ -99,8 +99,7 @@ defmodule Cryptex.MessageEncryptor do
   defp unpad_message(msg) do
     <<padding_size, rest::binary>> = msg
     msg_size = byte_size(rest) - padding_size
-    <<msg::[binary, size(msg_size)], _::binary>> = rest
+    <<msg::binary-size(msg_size), _::binary>> = rest
     msg
   end
-
 end

@@ -36,7 +36,7 @@ defmodule Cryptex.MessageVerifier do
   end
 
   defp digest(secret, data) do
-    <<mac :: [integer, size(160)]>> = :crypto.hmac(:sha, secret, data)
+    <<mac::integer-size(160)>> = :crypto.hmac(:sha, secret, data)
     Integer.to_char_list(mac, 16) |> IO.iodata_to_binary
   end
 
