@@ -39,7 +39,9 @@ defmodule Cryptex.KeyGeneratorTest do
 
   test ":sha256" do
     key = generate("password", "salt", digest: :sha256)
-    assert byte_size(key) == 32 
+    assert byte_size(key) == 32
     assert to_hex(key) == "632c2812e46d4604102ba7618e9d6d7d2f8128f6266b4a03264d2a0460b7dcb3"
   end
+
+  def to_hex(value), do: Base.encode16(value, case: :lower)
 end

@@ -64,15 +64,4 @@ defmodule Cryptex.KeyGenerator do
       :crypto.hmac(digest, key, data)
     end
   end
-
-  def to_hex(<<>>), do: <<>>
-  def to_hex(<<char::[integer, size(8)], rest::[binary]>>) do
-    hex1 = char |> div(16) |> to_hex_digit
-    hex2 = char |> rem(16) |> to_hex_digit
-    rest = to_hex(rest)
-    <<hex1, hex2, rest::[binary]>>
-  end
-
-  defp to_hex_digit(n) when n < 10, do: ?0 + n
-  defp to_hex_digit(n), do: ?a + n - 10
 end
