@@ -35,14 +35,13 @@ defmodule Cryptex.KeyGenerator do
 
   defp generate(fun, secret, salt, opts, block_index, acc) do
     length = opts[:length]
-    case IO.iodata_length(acc) > length do
-      true ->
-        key = acc |> Enum.reverse |> IO.iodata_to_binary
-        <<bin::[binary, size(length)], _::[binary]>> = key
-        bin
-      false ->
-        block = generate(fun, secret, salt, opts, block_index, 1, "", "")
-        generate(fun, secret, salt, opts, block_index + 1, [block, acc])
+    if IO.iodata_length(acc) > length do
+      key = acc |> Enum.reverse |> IO.iodata_to_binary
+      <<bin::[binary, size(length)], _::[binary]>> = key
+      bin
+    else
+      block = generate(fun, secret, salt, opts, block_index, 1, "", "")
+      generate(fun, secret, salt, opts, block_index + 1, [block, acc])
     end
   end
 
