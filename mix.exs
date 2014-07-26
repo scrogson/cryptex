@@ -4,7 +4,7 @@ defmodule Cryptex.Mixfile do
   def project do
     [app: :cryptex,
      version: "0.0.1",
-     elixir: "~> 0.14.3-dev",
+     elixir: ">= 0.14.0",
      deps: deps]
   end
 
