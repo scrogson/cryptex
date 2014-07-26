@@ -25,8 +25,6 @@ defmodule Cryptex.MessageEncryptor do
     decrypted.current_user.name # => "José"
   """
 
-  use GenServer
-
   alias Cryptex.MessageVerifier
   import Cryptex.Serializer
 
@@ -34,52 +32,35 @@ defmodule Cryptex.MessageEncryptor do
     opts = opts
     |> Keyword.put_new(:cipher, :aes_cbc256)
     |> Keyword.put_new(:serializer, :elixir)
-    {:ok, pid} = GenServer.start_link(__MODULE__, [secret, sign_secret, opts])
-    pid
-  end
 
-  def encrypt_and_sign(pid, message) do
-    GenServer.call(pid, {:encrypt_and_sign, message})
-  end
-
-  def decrypt_and_verify(pid, encrypted) do
-    GenServer.call(pid, {:decrypt_and_verify, encrypted})
-  end
-
-  def init([secret, sign_secret, opts]) do
-    state = %{
+    %{
       secret: secret,
       sign_secret: sign_secret,
       cipher: opts[:cipher],
       serializer: convert_serializer(opts[:serializer])
     }
-    {:ok, state}
   end
 
-  def handle_call({:encrypt_and_sign, message}, _from, state) do
+  def encrypt_and_sign(encryptor, message) do
     iv = :crypto.strong_rand_bytes(16)
 
     encrypted = message
-    |> state.serializer.encode
+    |> encryptor.serializer.encode
     |> pad_message
-    |> encrypt(state.cipher, state.secret, iv)
+    |> encrypt(encryptor.cipher, encryptor.secret, iv)
 
     encrypted = "#{Base.encode64(encrypted)}--#{Base.encode64(iv)}"
-    signed = MessageVerifier.generate(state.sign_secret, encrypted, :null)
-
-    {:reply, signed, state}
+    MessageVerifier.generate(encryptor.sign_secret, encrypted, :null)
   end
 
-  def handle_call({:decrypt_and_verify, encrypted}, _from, state) do
-    {:ok, verified} = MessageVerifier.verify(state.sign_secret, encrypted, :null)
+  def decrypt_and_verify(encryptor, encrypted) do
+    {:ok, verified} = MessageVerifier.verify(encryptor.sign_secret, encrypted, :null)
     [encrypted, iv] = String.split(verified, "--") |> Enum.map(&Base.decode64!/1)
 
     message = encrypted
-    |> decrypt(state.cipher, state.secret, iv)
+    |> decrypt(encryptor.cipher, encryptor.secret, iv)
     |> unpad_message
-    |> state.serializer.decode
-
-    {:reply, message, state}
+    |> encryptor.serializer.decode
   end
 
   defp encrypt(message, cipher, secret, iv) do
