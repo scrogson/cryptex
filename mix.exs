@@ -1,30 +1,28 @@
 defmodule Cryptex.Mixfile do
   use Mix.Project
 
+  @description """
+  An Elixir library for encrypting/decrypting, signing/verifying data.
+  """
+
   def project do
     [app: :cryptex,
      version: "0.0.1",
      elixir: ">= 0.14.0",
-     deps: deps]
+     description: @description,
+     package: package]
   end
 
-  # Configuration for the OTP application
-  #
-  # Type `mix help compile.app` for more information
   def application do
     [applications: []]
   end
 
-  # Dependencies can be hex.pm packages:
-  #
-  #   {:mydep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1"}
-  #
-  # Type `mix help deps` for more examples and options
-  defp deps do
-    []
+  defp package do
+    [
+      files: ["lib", "mix.exs", "README*", "LICENSE"],
+      contributors: ["Sonny Scroggin"],
+      licenses: ["MIT"],
+      links: [ { "GitHub", "https://github.com/scrogson/cryptex" } ]
+    ]
   end
 end
