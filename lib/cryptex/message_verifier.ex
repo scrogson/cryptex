@@ -14,7 +14,6 @@ defmodule Cryptex.MessageVerifier do
   Decodes and verifies the encoded binary was not tampared with.
   """
   def verify(secret, encoded, serializer \\ :elixir) do
-    
     case String.split(encoded, "--") do
       [content, digest] when content != "" and digest != "" ->
         if secure_compare(digest(secret, content), digest) do
