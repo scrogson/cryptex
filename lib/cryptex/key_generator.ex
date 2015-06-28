@@ -1,6 +1,6 @@
 defmodule Cryptex.KeyGenerator do
   @moduledoc """
-  KeyGenerator is a simple implementation of PBFDF2.
+  KeyGenerator is a simple implementation of PBKDF2.
 
   It can be used to derive a number of keys for various purposes from a given
   secret. This lets applications have a single secure secret, but avoid reusing
