@@ -54,13 +54,15 @@ defmodule Cryptex.MessageEncryptor do
   end
 
   def decrypt_and_verify(encryptor, encrypted) do
-    {:ok, verified} = MessageVerifier.verify(encryptor.sign_secret, encrypted, :null)
-    [encrypted, iv] = String.split(verified, "--") |> Enum.map(&Base.decode64!/1)
-
-    message = encrypted
-    |> decrypt(encryptor.cipher, encryptor.secret, iv)
-    |> unpad_message
-    |> encryptor.serializer.decode
+    case MessageVerifier.verify(encryptor.sign_secret, encrypted, :null) do
+      {:ok, verified} ->
+        [encrypted, iv] = String.split(verified, "--") |> Enum.map(&Base.decode64!/1)
+        message = encrypted
+          |> decrypt(encryptor.cipher, encryptor.secret, iv)
+          |> unpad_message
+          |> encryptor.serializer.decode
+      :error -> {:error, :verify_error}
+    end
   end
 
   defp encrypt(message, cipher, secret, iv) do
