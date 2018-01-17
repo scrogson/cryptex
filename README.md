@@ -1,26 +1,19 @@
 Cryptex
 =======
 
-An [Elixir][] library for encrypting/decrypting, signing/verifying data.
+An [Elixir] library for encrypting/decrypting, signing/verifying data.
+
+## Attention! This repo has been archived.
+
+This package is no longer being maintained and should not be used. The original
+code was developed to be included into [Plug]. It was merged into Plug in [this
+pull-request] and will continue to be maintained there.
+
+Using this package could cause your software to become vulnerable to attack.
 
 [Elixir]: http://elixir-lang.org
-
-## Usage
-
-```elixir
-secret_key_base = "072d1e0157c008193fe48a670cce031faa4e..."
-encrypted_cookie_salt = "encrypted cookie"
-encrypted_signed_cookie_salt = "signed encrypted cookie"
-
-secret = KeyGenerator.generate(secret_key_base, encrypted_cookie_salt)
-sign_secret = KeyGenerator.generate(secret_key_base, encrypted_signed_cookie_salt)
-encryptor = MessageEncryptor.new(secret, sign_secret)
-
-data = %{current_user: %{name: "José"}}
-encrypted = MessageEncryptor.encrypt_and_sign(encryptor, data)
-decrypted = MessageEncryptor.decrypt_and_verify(encryptor, encrypted)
-decrypted.current_user.name # => "José"
-```
+[Plug]: https://github.com/elixir-plug/plug
+[this pull-request]: https://github.com/elixir-plug/plug/pull/72
 
 ## License
 
